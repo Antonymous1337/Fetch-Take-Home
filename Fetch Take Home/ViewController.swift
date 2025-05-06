@@ -18,10 +18,22 @@ struct ViewController: View {
             NavigationStack(path: viewModel.getPathBinding()) {
                 RecipeView(
                     path: viewModel.getPathBinding(),
+                    selectedRecipe: viewModel.getSelectedRecipeBinding(),
                     cuisines: recipeContainer.cuisines,
                     recipeDict: recipeContainer.recipeDict,
                     refreshRecipes: refreshRecipes
                 )
+                .navigationDestination(for: String.self) { destination in
+                    switch destination {
+                    case .recipeDetailView:
+                        RecipeDetailView(selectedRecipe: viewModel.selectedRecipe)
+                    default:
+                        Rectangle()
+                            .onAppear {
+                                _ = viewModel.path.popLast()
+                            }
+                    }
+                }
             }
         } else {
             ProgressView()
@@ -44,6 +56,7 @@ fileprivate class ViewControllerViewModel: ObservableObject {
     
     @Published var recipeContainer: RecipeContainer?
     @Published var path: [String]
+    @Published var selectedRecipe: Recipe?
     
     init() {
         self.path = []
@@ -54,6 +67,14 @@ fileprivate class ViewControllerViewModel: ObservableObject {
             self.path
         }, set: { newPath in
             self.path = newPath
+        })
+    }
+    
+    func getSelectedRecipeBinding() -> Binding<Recipe?> {
+        return Binding(get: {
+            self.selectedRecipe
+        }, set: { newSelectedRecipe in
+            self.selectedRecipe = newSelectedRecipe
         })
     }
     

@@ -11,6 +11,7 @@ struct CachedImage: View {
     
     @StateObject private var manager = CachedImageManager()
     let url: String
+    let fill: Bool
     
     var body: some View {
         ZStack {
@@ -18,9 +19,10 @@ struct CachedImage: View {
                let image = UIImage(data: data) {
                 Image(uiImage: image)
                     .resizable()
-                    .scaledToFill()
+                    .aspectRatio(contentMode: fill ? .fill : .fit)
             } else {
                 ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .task {

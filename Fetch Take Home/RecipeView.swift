@@ -10,25 +10,25 @@ import SwiftUI
 struct RecipeView: View {
     
     @Binding var path: [String]
+    @Binding var selectedRecipe: Recipe?
     let cuisines: [String]
     let recipeDict: Dictionary<String, [Recipe]>
     let refreshRecipes: () -> ()
-    @State private var scrollOffset: CGPoint = .zero
-    @State private var refreshing = false
-    @State private var refreshed = false
+    @StateObject fileprivate var viewModel = RecipeViewViewModel()
     
     var body: some View {
         ZStack {
             VStack {
-                if !refreshed {
+                if !viewModel.refreshed {
                     ProgressView()
                         .frame(height: 60)
-                        .opacity((scrollOffset.y - 15.0) / 30.0)
+                        .opacity((viewModel.scrollOffset.y - 15.0) / 30.0)
                         .scaleEffect(1.2, anchor: .center)
                         .transition(AnyTransition.scale(scale: 0, anchor: .center))
                 } else {
                     Text("Refreshed!")
                         .frame(height: 60)
+                        .opacity((viewModel.scrollOffset.y - 25.0) / 30.0)
                 }
             }
             .frame(maxHeight: .infinity, alignment: .top)
@@ -57,7 +57,7 @@ struct RecipeView: View {
                                         .frame(width: 150, height: 160)
                                         .background {
                                             if let recipeString = recipe.photo_url_small {
-                                                CachedImage(url: recipeString)
+                                                CachedImage(url: recipeString, fill: true)
                                             } else {
                                                 Rectangle()
                                             }
@@ -80,6 +80,10 @@ struct RecipeView: View {
                                         .mask {
                                             RoundedRectangle(cornerRadius: 16)
                                         }
+                                        .onTapGesture {
+                                            selectedRecipe = recipe
+                                            path.append(.recipeDetailView)
+                                        }
                                     if recipe.photo_url_small != nil {
                                         
                                     }
@@ -98,24 +102,24 @@ struct RecipeView: View {
                     }
                 )
                 .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
-                    self.scrollOffset = value
+                    viewModel.scrollOffset = value
                     
                     if value.y >= 60.0 &&
-                        !refreshing &&
-                        !refreshed {
+                        !viewModel.refreshing &&
+                        !viewModel.refreshed {
                         Task {
-                            refreshing = true
+                            viewModel.refreshing = true
                             refreshRecipes()
-                            refreshing = false
+                            viewModel.refreshing = false
                             withAnimation {
-                                refreshed = true
+                                viewModel.refreshed = true
                             }
                             print("Refreshed")
                         }
                     }
                     
                     if value.y <= 0 {
-                        refreshed = false
+                        viewModel.refreshed = false
                     }
                 
                     
@@ -139,6 +143,12 @@ fileprivate struct ScrollOffsetPreferenceKey: PreferenceKey {
     
     static func reduce(value: inout CGPoint, nextValue: () -> CGPoint) {
     }
+}
+
+fileprivate class RecipeViewViewModel: ObservableObject {
+    @Published var scrollOffset: CGPoint = .zero
+    @Published var refreshing = false
+    @Published var refreshed = false
 }
 
 #Preview {
