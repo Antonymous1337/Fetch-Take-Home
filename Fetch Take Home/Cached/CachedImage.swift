@@ -26,7 +26,7 @@ struct CachedImage: View {
             }
         }
         .task {
-            await manager.load(url)
+            _ = await manager.load(url)
         }
     }
 }

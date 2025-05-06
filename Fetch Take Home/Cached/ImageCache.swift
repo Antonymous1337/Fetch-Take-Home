@@ -31,4 +31,11 @@ class ImageCache {
         cache.setObject(object, forKey: key)
     }
     
+    func _resetCache() {
+        let tempCache = CacheType()
+        cache.countLimit = 100
+        cache.totalCostLimit = 50 * 1024 * 1024 // 50MB
+        cache = tempCache
+    }
+    
 }

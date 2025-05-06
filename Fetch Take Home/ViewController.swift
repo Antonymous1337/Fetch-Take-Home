@@ -11,7 +11,7 @@ import SwiftData
 struct ViewController: View {
 
     // You can change which API Endpoint to use by changing APIEndpointType to either .allRecipes, .malformed, or .empty
-    @StateObject fileprivate var viewModel = ViewControllerViewModel(APIEndpointType: .malformed)
+    @StateObject fileprivate var viewModel = ViewControllerViewModel(APIEndpointType: .allRecipes)
     
     var body: some View {
         if let recipeContainer = viewModel.recipeContainer,
@@ -65,7 +65,7 @@ struct ViewController: View {
 }
 
 @MainActor
-fileprivate class ViewControllerViewModel: ObservableObject {
+class ViewControllerViewModel: ObservableObject {
     
     let APIEndpointType: APIEndpointTypes
     @Published var recipeContainer: RecipeContainer?

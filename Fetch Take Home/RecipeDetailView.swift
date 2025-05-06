@@ -18,6 +18,15 @@ struct RecipeDetailView: View {
                 
                 VStack(spacing: 16) {
                     
+                    Text(uwSelectedRecipe.name)
+                        .font(.largeTitle)
+                        .bold()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(2)
+                        .minimumScaleFactor(0.001)
+                        .padding(.horizontal)
+                    
                     if let largeImageUrl = uwSelectedRecipe.photo_url_large {
                         CachedImage(url: largeImageUrl, fill: true)
                             .frame(height: 200)
@@ -91,7 +100,6 @@ struct RecipeDetailView: View {
                     
                 }
             }
-            .navigationTitle(uwSelectedRecipe.name)
         } else {
             Text("An Error Has Occured")
         }

@@ -14,19 +14,11 @@
 			remoteGlobalIDString = 056F7DA52DC9744700BBA1C2;
 			remoteInfo = "Fetch Take Home";
 		};
-		056F7DC32DC9744900BBA1C2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 056F7D9E2DC9744700BBA1C2 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 056F7DA52DC9744700BBA1C2;
-			remoteInfo = "Fetch Take Home";
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		056F7DA62DC9744700BBA1C2 /* Fetch Take Home.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Fetch Take Home.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		056F7DB82DC9744900BBA1C2 /* Fetch Take HomeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Fetch Take HomeTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		056F7DC22DC9744900BBA1C2 /* Fetch Take HomeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Fetch Take HomeUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -57,13 +49,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		056F7DBF2DC9744900BBA1C2 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -81,7 +66,6 @@
 			children = (
 				056F7DA62DC9744700BBA1C2 /* Fetch Take Home.app */,
 				056F7DB82DC9744900BBA1C2 /* Fetch Take HomeTests.xctest */,
-				056F7DC22DC9744900BBA1C2 /* Fetch Take HomeUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -134,26 +118,6 @@
 			productReference = 056F7DB82DC9744900BBA1C2 /* Fetch Take HomeTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		056F7DC12DC9744900BBA1C2 /* Fetch Take HomeUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 056F7DD22DC9744900BBA1C2 /* Build configuration list for PBXNativeTarget "Fetch Take HomeUITests" */;
-			buildPhases = (
-				056F7DBE2DC9744900BBA1C2 /* Sources */,
-				056F7DBF2DC9744900BBA1C2 /* Frameworks */,
-				056F7DC02DC9744900BBA1C2 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				056F7DC42DC9744900BBA1C2 /* PBXTargetDependency */,
-			);
-			name = "Fetch Take HomeUITests";
-			packageProductDependencies = (
-			);
-			productName = "Fetch Take HomeUITests";
-			productReference = 056F7DC22DC9744900BBA1C2 /* Fetch Take HomeUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -168,10 +132,6 @@
 						CreatedOnToolsVersion = 16.1;
 					};
 					056F7DB72DC9744900BBA1C2 = {
-						CreatedOnToolsVersion = 16.1;
-						TestTargetID = 056F7DA52DC9744700BBA1C2;
-					};
-					056F7DC12DC9744900BBA1C2 = {
 						CreatedOnToolsVersion = 16.1;
 						TestTargetID = 056F7DA52DC9744700BBA1C2;
 					};
@@ -193,7 +153,6 @@
 			targets = (
 				056F7DA52DC9744700BBA1C2 /* Fetch Take Home */,
 				056F7DB72DC9744900BBA1C2 /* Fetch Take HomeTests */,
-				056F7DC12DC9744900BBA1C2 /* Fetch Take HomeUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -207,13 +166,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		056F7DB62DC9744900BBA1C2 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		056F7DC02DC9744900BBA1C2 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -237,13 +189,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		056F7DBE2DC9744900BBA1C2 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -251,11 +196,6 @@
 			isa = PBXTargetDependency;
 			target = 056F7DA52DC9744700BBA1C2 /* Fetch Take Home */;
 			targetProxy = 056F7DB92DC9744900BBA1C2 /* PBXContainerItemProxy */;
-		};
-		056F7DC42DC9744900BBA1C2 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 056F7DA52DC9744700BBA1C2 /* Fetch Take Home */;
-			targetProxy = 056F7DC32DC9744900BBA1C2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -495,50 +435,6 @@
 			};
 			name = Release;
 		};
-		056F7DD32DC9744900BBA1C2 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 3523G85NQ2;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.AntApps.Fetch-Take-HomeUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_TARGET_NAME = "Fetch Take Home";
-			};
-			name = Debug;
-		};
-		056F7DD42DC9744900BBA1C2 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 3523G85NQ2;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.AntApps.Fetch-Take-HomeUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
-				TEST_TARGET_NAME = "Fetch Take Home";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -565,15 +461,6 @@
 			buildConfigurations = (
 				056F7DD02DC9744900BBA1C2 /* Debug */,
 				056F7DD12DC9744900BBA1C2 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		056F7DD22DC9744900BBA1C2 /* Build configuration list for PBXNativeTarget "Fetch Take HomeUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				056F7DD32DC9744900BBA1C2 /* Debug */,
-				056F7DD42DC9744900BBA1C2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

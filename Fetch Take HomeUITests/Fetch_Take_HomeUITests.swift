@@ -2,10 +2,11 @@
 //  Fetch_Take_HomeUITests.swift
 //  Fetch Take HomeUITests
 //
-//  Created by Antony Holshouser on 5/5/25.
+//  Created by Antony Holshouser on 5/6/25.
 //
 
 import XCTest
+@testable import Fetch_Take_Home
 
 final class Fetch_Take_HomeUITests: XCTestCase {
 
@@ -29,6 +30,10 @@ final class Fetch_Take_HomeUITests: XCTestCase {
         app.launch()
 
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let customViewController = ViewControllerViewModel(APIEndpointType: .empty)
+        XCTAssert(customViewController.recipeContainer != nil)
+        XCTAssert(customViewController.recipeContainer!.recipes.isEmpty)
+        XCTAssert(customViewController.recipeContainer!.processed)
     }
 
     @MainActor

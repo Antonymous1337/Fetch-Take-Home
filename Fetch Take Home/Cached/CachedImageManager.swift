@@ -13,12 +13,12 @@ final class CachedImageManager: ObservableObject {
     private let imageRetriever = ImageRetriever()
     
     @MainActor
-    func load(_ imgUrl: String, cache: ImageCache = .shared) async {
+    func load(_ imgUrl: String, cache: ImageCache = .shared) async -> String {
         
         if let imageData = cache.object(forKey: imgUrl as NSString) {
             self.data = imageData
             // print("Fetch Cache")
-            return
+            return .fetchedCache
         }
         do {
             self.data = try await imageRetriever.fetch(imgUrl)
@@ -29,5 +29,6 @@ final class CachedImageManager: ObservableObject {
         } catch {
             print(error)
         }
+        return .setCache
     }
 }

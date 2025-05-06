@@ -28,6 +28,14 @@ struct RecipeContainer: Codable {
         processed = false
     }
     
+    // Testing Purposes
+    init(testRecipes: [Recipe]) {
+        recipes = testRecipes
+        cuisines = []
+        recipeDict = Dictionary<String, [Recipe]>()
+        processed = false
+    }
+    
     // Could be decently faster with a priority queues
     mutating func processRecipes() {
         
