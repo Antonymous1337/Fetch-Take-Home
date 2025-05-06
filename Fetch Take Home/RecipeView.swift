@@ -8,27 +8,32 @@
 import SwiftUI
 
 struct RecipeView: View {
+    @Environment(\.isSearching) private var isSearching
     
     @Binding var path: [String]
     @Binding var selectedRecipe: Recipe?
+    let recipes: [Recipe]
     let cuisines: [String]
     let recipeDict: Dictionary<String, [Recipe]>
     let refreshRecipes: () -> ()
     @StateObject fileprivate var viewModel = RecipeViewViewModel()
     
     var body: some View {
+    
         ZStack {
             VStack {
                 if !viewModel.refreshed {
                     ProgressView()
-                        .frame(height: 60)
+                        .frame(height: 60, alignment: .center)
                         .opacity((viewModel.scrollOffset.y - 15.0) / 30.0)
                         .scaleEffect(1.2, anchor: .center)
                         .transition(AnyTransition.scale(scale: 0, anchor: .center))
+                        .padding(.top, isSearching ? 0 : -96)
                 } else {
                     Text("Refreshed!")
                         .frame(height: 60)
                         .opacity((viewModel.scrollOffset.y - 25.0) / 30.0)
+                        .padding(.top, isSearching ? 0 : -96)
                 }
             }
             .frame(maxHeight: .infinity, alignment: .top)
@@ -36,12 +41,6 @@ struct RecipeView: View {
             ScrollView {
                 
                 LazyVStack {
-                    Text("Recipes")
-                        .font(.largeTitle)
-                        .bold()
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.001)
-                
                 
                     ForEach(cuisines, id: \.self) { cuisine in
                         Text(cuisine)
@@ -52,41 +51,11 @@ struct RecipeView: View {
                         ScrollView(.horizontal) {
                             LazyHStack {
                                 ForEach(recipeDict[cuisine]!, id: \.uuid) { recipe in
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .strokeBorder(style: StrokeStyle(lineWidth: 1))
-                                        .frame(width: 150, height: 160)
-                                        .background {
-                                            if let recipeString = recipe.photo_url_small {
-                                                CachedImage(url: recipeString, fill: true)
-                                            } else {
-                                                Rectangle()
-                                            }
-                                        }
-                                        .overlay {
-                                            VStack {
-                                                Text(recipe.name)
-                                                    .foregroundStyle(.white)
-                                                    .lineLimit(2, reservesSpace: true)
-                                                    .multilineTextAlignment(.center)
-                                            }
-                                            .padding(8)
-                                            .frame(maxWidth: .infinity)
-                                            .background {
-                                                Rectangle()
-                                                    .opacity(0.9)
-                                            }
-                                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                                        }
-                                        .mask {
-                                            RoundedRectangle(cornerRadius: 16)
-                                        }
-                                        .onTapGesture {
-                                            selectedRecipe = recipe
-                                            path.append(.recipeDetailView)
-                                        }
-                                    if recipe.photo_url_small != nil {
-                                        
-                                    }
+                                    RecipeIslandView(
+                                        recipe: recipe,
+                                        path: $path,
+                                        selectedRecipe: $selectedRecipe
+                                    )
                                 }
                             }
                             .padding(.horizontal)
@@ -118,10 +87,9 @@ struct RecipeView: View {
                         }
                     }
                     
-                    if value.y <= 0 {
+                    if value.y <= 1 {
                         viewModel.refreshed = false
                     }
-                
                     
                 }
                 
@@ -129,12 +97,58 @@ struct RecipeView: View {
             .scrollIndicators(.hidden)
             .coordinateSpace(name: "scroll")
             
+            if viewModel.searchText != "" {
+                ScrollView {
+                    LazyVStack {
+                        let filteredRecipes = viewModel.getFilteredRecipes(recipes: recipes)
+                        ForEach(filteredRecipes, id: \.uuid) { recipe in
+                            Button {
+                                selectedRecipe = recipe
+                                path.append(.recipeDetailView)
+                            } label: {
+                                HStack {
+                                    Group {
+                                        if let recipeString = recipe.photo_url_small {
+                                            CachedImage(url: recipeString, fill: true)
+                                                .frame(width: 50, height: 50)
+                                        } else if let recipeString = recipe.photo_url_large {
+                                            CachedImage(url: recipeString, fill: true)
+                                        } else {
+                                            Rectangle()
+                                        }
+                                    }
+                                    .mask {
+                                        RoundedRectangle(cornerRadius: 8)
+                                    }
+                                    .overlay {
+                                        RoundedRectangle(cornerRadius: 8)
+                                            .strokeBorder(.black, lineWidth: 0.5)
+                                    }
+                                    Spacer(minLength: 0)
+                                    Text(recipe.name)
+                                }
+                            }
+                            .buttonStyle(.plain)
+                            
+                            Divider()
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+                .background {
+                    Color.screenBackground
+                        .ignoresSafeArea()
+                }
+            }
             
         }
         .background {
             Color.screenBackground
                 .ignoresSafeArea()
         }
+        .searchable(text: $viewModel.searchText)
+        .navigationTitle("Recipes")
+        .navigationBarTitleDisplayMode(.large)
     }
 }
 
@@ -149,6 +163,17 @@ fileprivate class RecipeViewViewModel: ObservableObject {
     @Published var scrollOffset: CGPoint = .zero
     @Published var refreshing = false
     @Published var refreshed = false
+    
+    @Published var searchText = ""
+    
+    func getFilteredRecipes(recipes: [Recipe]) -> [Recipe] {
+        guard searchText != "" else {
+            return recipes
+        }
+        return recipes.filter { recipe in
+            recipe.name.lowercased().contains(searchText.lowercased())
+        }
+    }
 }
 
 #Preview {

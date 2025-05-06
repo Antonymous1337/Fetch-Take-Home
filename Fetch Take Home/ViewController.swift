@@ -10,31 +10,44 @@ import SwiftData
 
 struct ViewController: View {
 
-    @StateObject fileprivate var viewModel = ViewControllerViewModel()
+    // You can change which API Endpoint to use by changing APIEndpointType to either .allRecipes, .malformed, or .empty
+    @StateObject fileprivate var viewModel = ViewControllerViewModel(APIEndpointType: .allRecipes)
     
     var body: some View {
         if let recipeContainer = viewModel.recipeContainer,
             recipeContainer.processed {
-            NavigationStack(path: viewModel.getPathBinding()) {
-                RecipeView(
-                    path: viewModel.getPathBinding(),
-                    selectedRecipe: viewModel.getSelectedRecipeBinding(),
-                    cuisines: recipeContainer.cuisines,
-                    recipeDict: recipeContainer.recipeDict,
-                    refreshRecipes: refreshRecipes
-                )
-                .navigationDestination(for: String.self) { destination in
-                    switch destination {
-                    case .recipeDetailView:
-                        RecipeDetailView(selectedRecipe: viewModel.selectedRecipe)
-                    default:
-                        Rectangle()
-                            .onAppear {
-                                _ = viewModel.path.popLast()
-                            }
+            
+            if recipeContainer.recipes.isEmpty {
+                
+                EmptyRecipesView()
+                
+            } else {
+                NavigationStack(path: viewModel.getPathBinding()) {
+                    RecipeView(
+                        path: viewModel.getPathBinding(),
+                        selectedRecipe: viewModel.getSelectedRecipeBinding(),
+                        recipes: recipeContainer.recipes,
+                        cuisines: recipeContainer.cuisines,
+                        recipeDict: recipeContainer.recipeDict,
+                        refreshRecipes: refreshRecipes
+                    )
+                    .navigationDestination(for: String.self) { destination in
+                        switch destination {
+                        case .recipeDetailView:
+                            RecipeDetailView(selectedRecipe: viewModel.selectedRecipe)
+                        default:
+                            Rectangle()
+                                .onAppear {
+                                    _ = viewModel.path.popLast()
+                                }
+                        }
                     }
                 }
             }
+        } else if viewModel.errorOccured {
+            
+            MalformedDataView()
+            
         } else {
             ProgressView()
                 .onAppear {
@@ -54,12 +67,17 @@ struct ViewController: View {
 @MainActor
 fileprivate class ViewControllerViewModel: ObservableObject {
     
+    let APIEndpointType: APIEndpointTypes
     @Published var recipeContainer: RecipeContainer?
     @Published var path: [String]
     @Published var selectedRecipe: Recipe?
     
-    init() {
+    @Published var errorOccured: Bool
+    
+    init(APIEndpointType: APIEndpointTypes) {
+        self.APIEndpointType = APIEndpointType
         self.path = []
+        errorOccured = false
     }
     
     func getPathBinding() -> Binding<[String]> {
@@ -79,9 +97,23 @@ fileprivate class ViewControllerViewModel: ObservableObject {
     }
     
     func fetchRecepies() async {
-        guard let url = URL(string: "https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json") else {
+        
+        var urlString = ""
+        
+        // All Recipes
+        switch APIEndpointType {
+        case .allRecipes:
+            urlString = "https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json"
+        case .malformed:
+            urlString = "https://d3jbb8n5wk0qxi.cloudfront.net/recipes-malformed.json"
+        case .empty:
+            urlString = "https://d3jbb8n5wk0qxi.cloudfront.net/recipes-empty.json"
+        }
+    
+        guard let url = URL(string: urlString) else {
             return
         }
+        
         let _: Void = URLSession.shared.dataTask(with: url) { data, _, error in
             guard let data = data else {
                 print("fetchRecepies Data is nil")
@@ -96,13 +128,15 @@ fileprivate class ViewControllerViewModel: ObservableObject {
                 var tempRecipeContainer: RecipeContainer?
                 do {
                     tempRecipeContainer = try JSONDecoder().decode(RecipeContainer.self, from: data)
+                    
+                    Task {
+                        tempRecipeContainer!.processRecipes()
+                        self.recipeContainer = tempRecipeContainer
+                    }
                 } catch {
                     print("fetchRecepies Decoding error")
                     print(error)
-                }
-                Task {
-                    tempRecipeContainer!.processRecipes()
-                    self.recipeContainer = tempRecipeContainer
+                    self.errorOccured = true
                 }
                 
                 
