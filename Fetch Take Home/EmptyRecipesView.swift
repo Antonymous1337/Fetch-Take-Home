@@ -8,8 +8,13 @@
 import SwiftUI
 
 struct EmptyRecipesView: View {
+    let refreshRecipes: () -> ()
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
+            
+            Spacer(minLength: 0)
+            
             Text("😱")
                 .font(Font.system(size: 50))
                 .frame(maxWidth: .infinity)
@@ -24,11 +29,22 @@ struct EmptyRecipesView: View {
             
             Text("We deeply apologize for any inconvenience this may have caused. Please come back later as it may take some time for this issue to be solved.")
             
+            Spacer(minLength: 0)
+            
+            Button {
+                refreshRecipes()
+            } label: {
+                Text("Refresh")
+                    .font(.title3)
+                    .frame(maxWidth: .infinity, maxHeight: 50)
+            }
+            .buttonStyle(.borderedProminent)
+            
         }
         .padding(.horizontal)
     }
 }
 
 #Preview {
-    EmptyRecipesView()
+    ViewController()
 }

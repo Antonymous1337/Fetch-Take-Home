@@ -11,7 +11,7 @@ import SwiftData
 struct ViewController: View {
 
     // You can change which API Endpoint to use by changing APIEndpointType to either .allRecipes, .malformed, or .empty
-    @StateObject fileprivate var viewModel = ViewControllerViewModel(APIEndpointType: .allRecipes)
+    @StateObject fileprivate var viewModel = ViewControllerViewModel(APIEndpointType: .malformed)
     
     var body: some View {
         if let recipeContainer = viewModel.recipeContainer,
@@ -19,7 +19,7 @@ struct ViewController: View {
             
             if recipeContainer.recipes.isEmpty {
                 
-                EmptyRecipesView()
+                EmptyRecipesView(refreshRecipes: refreshRecipes)
                 
             } else {
                 NavigationStack(path: viewModel.getPathBinding()) {
@@ -46,7 +46,7 @@ struct ViewController: View {
             }
         } else if viewModel.errorOccured {
             
-            MalformedDataView()
+            MalformedDataView(refreshRecipes: refreshRecipes)
             
         } else {
             ProgressView()
