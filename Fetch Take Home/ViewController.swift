@@ -33,6 +33,7 @@ struct ViewController: View {
 
 }
 
+@MainActor
 fileprivate class ViewControllerViewModel: ObservableObject {
     
     @Published var recipeContainer: RecipeContainer?
@@ -54,7 +55,7 @@ fileprivate class ViewControllerViewModel: ObservableObject {
         guard let url = URL(string: "https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json") else {
             return
         }
-        let task: Void = URLSession.shared.dataTask(with: url) { data, _, error in
+        let _: Void = URLSession.shared.dataTask(with: url) { data, _, error in
             guard let data = data else {
                 print("fetchRecepies Data is nil")
                 return
@@ -63,13 +64,21 @@ fileprivate class ViewControllerViewModel: ObservableObject {
                 print("fetchRecepies Error Occured")
                 return
             }
-            do {
-                self.recipeContainer = try JSONDecoder().decode(RecipeContainer.self, from: data)
-                self.recipeContainer!.processRecipes()
-            } catch {
-                print("fetchRecepies Decoding error")
-                print(error)
+            
+            DispatchQueue.main.async {
+                do {
+                    self.recipeContainer = try JSONDecoder().decode(RecipeContainer.self, from: data)
+                } catch {
+                    print("fetchRecepies Decoding error")
+                    print(error)
+                }
+                Task {
+                    self.recipeContainer!.processRecipes()
+                }
             }
+            
+            
+            
             
         }.resume()
     }
