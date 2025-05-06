@@ -12,7 +12,8 @@ import SwiftData
 struct Fetch_Take_HomeApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ViewController()
+                .dynamicTypeSize(.large)
         }
     }
 }

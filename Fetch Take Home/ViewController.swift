@@ -1,0 +1,80 @@
+//
+//  ContentView.swift
+//  Fetch Take Home
+//
+//  Created by Antony Holshouser on 5/5/25.
+//
+
+import SwiftUI
+import SwiftData
+
+struct ViewController: View {
+
+    @StateObject fileprivate var viewModel = ViewControllerViewModel()
+    
+    var body: some View {
+        if let recipeContainer = viewModel.recipeContainer,
+            recipeContainer.processed {
+            NavigationStack(path: viewModel.getPathBinding()) {
+                RecipeView(
+                    path: viewModel.getPathBinding(),
+                    cuisines: recipeContainer.cuisines,
+                    recipeDict: recipeContainer.recipeDict
+                )
+            }
+        } else {
+            ProgressView()
+                .task {
+                    await viewModel.fetchRecepies()
+                    
+                }
+        }
+    }
+
+}
+
+fileprivate class ViewControllerViewModel: ObservableObject {
+    
+    @Published var recipeContainer: RecipeContainer?
+    @Published var path: [String]
+    
+    init() {
+        self.path = []
+    }
+    
+    func getPathBinding() -> Binding<[String]> {
+        return Binding(get: {
+            self.path
+        }, set: { newPath in
+            self.path = newPath
+        })
+    }
+    
+    func fetchRecepies() async {
+        guard let url = URL(string: "https://d3jbb8n5wk0qxi.cloudfront.net/recipes.json") else {
+            return
+        }
+        let task: Void = URLSession.shared.dataTask(with: url) { data, _, error in
+            guard let data = data else {
+                print("fetchRecepies Data is nil")
+                return
+            }
+            guard error == nil else {
+                print("fetchRecepies Error Occured")
+                return
+            }
+            do {
+                self.recipeContainer = try JSONDecoder().decode(RecipeContainer.self, from: data)
+                self.recipeContainer!.processRecipes()
+            } catch {
+                print("fetchRecepies Decoding error")
+                print(error)
+            }
+            
+        }.resume()
+    }
+}
+
+#Preview {
+    ViewController()
+}
