@@ -14,7 +14,7 @@ struct RecipeIslandView: View {
     
     var body: some View {
         RoundedRectangle(cornerRadius: 16)
-            .strokeBorder(style: StrokeStyle(lineWidth: 1))
+            .opacity(0)
             .frame(width: 150, height: 160)
             .background {
                 if let recipeString = recipe.photo_url_small {
@@ -36,12 +36,17 @@ struct RecipeIslandView: View {
                 .frame(maxWidth: .infinity)
                 .background {
                     Rectangle()
+                        .fill(.black)
                         .opacity(0.9)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
             }
             .mask {
                 RoundedRectangle(cornerRadius: 16)
+            }
+            .overlay {
+                RoundedRectangle(cornerRadius: 16)
+                    .strokeBorder(style: StrokeStyle(lineWidth: 1))
             }
             .onTapGesture {
                 selectedRecipe = recipe
