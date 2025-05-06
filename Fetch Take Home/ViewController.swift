@@ -19,15 +19,21 @@ struct ViewController: View {
                 RecipeView(
                     path: viewModel.getPathBinding(),
                     cuisines: recipeContainer.cuisines,
-                    recipeDict: recipeContainer.recipeDict
+                    recipeDict: recipeContainer.recipeDict,
+                    refreshRecipes: refreshRecipes
                 )
             }
         } else {
             ProgressView()
-                .task {
-                    await viewModel.fetchRecepies()
-                    
+                .onAppear {
+                    refreshRecipes()
                 }
+        }
+    }
+    
+    private func refreshRecipes() {
+        Task {
+            await viewModel.fetchRecepies()
         }
     }
 
@@ -66,15 +72,19 @@ fileprivate class ViewControllerViewModel: ObservableObject {
             }
             
             DispatchQueue.main.async {
+                var tempRecipeContainer: RecipeContainer?
                 do {
-                    self.recipeContainer = try JSONDecoder().decode(RecipeContainer.self, from: data)
+                    tempRecipeContainer = try JSONDecoder().decode(RecipeContainer.self, from: data)
                 } catch {
                     print("fetchRecepies Decoding error")
                     print(error)
                 }
                 Task {
-                    self.recipeContainer!.processRecipes()
+                    tempRecipeContainer!.processRecipes()
+                    self.recipeContainer = tempRecipeContainer
                 }
+                
+                
             }
             
             

@@ -12,13 +12,24 @@ struct RecipeView: View {
     @Binding var path: [String]
     let cuisines: [String]
     let recipeDict: Dictionary<String, [Recipe]>
+    let refreshRecipes: () -> ()
     @State private var scrollOffset: CGPoint = .zero
+    @State private var refreshing = false
+    @State private var refreshed = false
     
     var body: some View {
         ZStack {
             VStack {
-                ProgressView()
-                    .padding(.top)
+                if !refreshed {
+                    ProgressView()
+                        .frame(height: 60)
+                        .opacity((scrollOffset.y - 15.0) / 30.0)
+                        .scaleEffect(1.2, anchor: .center)
+                        .transition(AnyTransition.scale(scale: 0, anchor: .center))
+                } else {
+                    Text("Refreshed!")
+                        .frame(height: 60)
+                }
             }
             .frame(maxHeight: .infinity, alignment: .top)
             
@@ -88,7 +99,26 @@ struct RecipeView: View {
                 )
                 .onPreferenceChange(ScrollOffsetPreferenceKey.self) { value in
                     self.scrollOffset = value
-                    print(value)
+                    
+                    if value.y >= 60.0 &&
+                        !refreshing &&
+                        !refreshed {
+                        Task {
+                            refreshing = true
+                            refreshRecipes()
+                            refreshing = false
+                            withAnimation {
+                                refreshed = true
+                            }
+                            print("Refreshed")
+                        }
+                    }
+                    
+                    if value.y <= 0 {
+                        refreshed = false
+                    }
+                
+                    
                 }
                 
             }
